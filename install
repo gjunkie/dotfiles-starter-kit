@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+LOG="${HOME}/Library/Logs/dotfiles.log"
+GITHUB_USER=<your github user name here>
+DIR="/usr/local/opt/dotfiles"
+
+_process() {
+    echo "$(date) PROCESSING:  $@" >> $LOG
+    printf "$(tput setaf 6) %s...$(tput sgr0)\n" "$@"
+}
+
+_success() {
+  local message=$1
+  printf "%s✓ Success:%s\n" "$(tput setaf 2)" "$(tput sgr0) $message"
+}
+
+download_dotfiles() {
+    _process "→ Creating directory at ${DIR} and setting permissions"
+    mkdir -p "${DIR}"
+
+    _process "→ Downloading repository to /tmp directory"
+    curl -#fLo /tmp/dotfiles.tar.gz "https://github.com/${GITHUB_USER}/dotfiles/tarball/main"
+
+    _process "→ Extracting files to ${DIR}"
+    tar -zxf /tmp/dotfiles.tar.gz --strip-components 1 -C "${DIR}"
+
+    _process "→ Removing tarball from /tmp directory"
+    rm -rf /tmp/dotfiles.tar.gz
+
+    [[ $? ]] && _success "${DIR} created, repository downloaded and extracted"
+
+    # Change to the dotfiles directory
+    cd "${DIR}"
+}
+
+link_dotfiles() {
+    # symlink files to the HOME directory.
+    if [[ -f "${DIR}/opt/files" ]]; then
+        _process "→ Linking files"
+
+        # Set variable for list of files
+        files="${DIR}/opt/files"
+
+        # Store IFS separator within a temp variable
+        OIFS=$IFS
+        # Set the separator to a carriage return & a new line break
+        # read in passed-in file and store as an array
+        IFS=$'\r\n'
+        links=($(cat "${files}"))
+
+        # Loop through array of files
+        for index in ${!links[*]}
+        do
+            for link in ${links[$index]}
+            do
+                # set IFS back to space to split string on
+                IFS=$' '
+                # create an array of line items
+                file=(${links[$index]})
+                # Create symbolic link
+                ln -fs "${DIR}/${symlink[0]}" "${HOME}/${symlink[1]}"
+            done
+            # set separater back to carriage return & new line break
+            IFS=$'\r\n'
+        done
+
+        # Reset IFS back
+        IFS=$OIFS
+
+    # set global Git .gitignore file
+    git config --global core.excludesFile '~/.gitignore'
+        [[ $? ]] && _success "All files have been copied"
+    fi
+}
+
+install() {
+    download_dotfiles
+    link_dotfiles
+}
+
+install
