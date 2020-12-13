@@ -58,7 +58,7 @@ link_dotfiles() {
                 # create an array of line items
                 file=(${links[$index]})
                 # Create symbolic link
-                ln -fs "${DIR}/${symlink[0]}" "${HOME}/${symlink[1]}"
+                ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
             done
             # set separater back to carriage return & new line break
             IFS=$'\r\n'
