@@ -52,6 +52,7 @@ link_dotfiles() {
         do
             for link in ${links[$index]}
             do
+                _process "→ Linking ${links[$index]}"
                 # set IFS back to space to split string on
                 IFS=$' '
                 # create an array of line items
