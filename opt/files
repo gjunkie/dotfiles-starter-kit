@@ -1,2 +1,4 @@
-configs/.test .test
-configs/.testtwo .testtwo
+configs/.gitconfig .gitconfig
+configs/.gitignore .gitignore
+configs/.bash_profile .bash_profile
+configs/.vimrc .vimrc
