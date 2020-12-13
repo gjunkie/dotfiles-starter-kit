@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 LOG="${HOME}/Library/Logs/dotfiles.log"
-GITHUB_USER=<your github user name here>
-DIR="/usr/local/opt/dotfiles"
+GITHUB_USER="gjunkie"
+DIR="/usr/local/opt/dotfiles-starter-kit"
 
 _process() {
     echo "$(date) PROCESSING:  $@" >> $LOG
@@ -18,13 +18,13 @@ download_dotfiles() {
     mkdir -p "${DIR}"
 
     _process "→ Downloading repository to /tmp directory"
-    curl -#fLo /tmp/dotfiles.tar.gz "https://github.com/${GITHUB_USER}/dotfiles/tarball/main"
+    curl -#fLo /tmp/dotfiles-starter-kit.tar.gz "https://github.com/${GITHUB_USER}/dotfiles-starter-kit/tarball/main"
 
     _process "→ Extracting files to ${DIR}"
-    tar -zxf /tmp/dotfiles.tar.gz --strip-components 1 -C "${DIR}"
+    tar -zxf /tmp/dotfiles-starter-kit.tar.gz --strip-components 1 -C "${DIR}"
 
     _process "→ Removing tarball from /tmp directory"
-    rm -rf /tmp/dotfiles.tar.gz
+    rm -rf /tmp/dotfiles-starter-kit.tar.gz
 
     [[ $? ]] && _success "${DIR} created, repository downloaded and extracted"
 

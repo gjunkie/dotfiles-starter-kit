@@ -11,5 +11,5 @@ A boilerplate for setting up your dotfiles that can be easily syncs across your 
 Make sure to update the username in the command below with your GitHub username.
 
 ```
-$ bash -c "$(curl -#fL raw.github.com/gjunkie/dotfiles/main/install)"
+$ bash -c "$(curl -#fL raw.github.com/gjunkie/dotfiles-starter-kit/main/install)"
 ```
