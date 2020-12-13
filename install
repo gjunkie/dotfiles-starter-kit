@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 LOG="${HOME}/Library/Logs/dotfiles.log"
 GITHUB_USER="gjunkie"
-DIR="/usr/local/opt/dotfiles-starter-kit"
+GITHUB_REPO="dotfiles-starter-kit"
+DIR="/usr/local/opt/${GITHUB_REPO}"
 
 _process() {
     echo "$(date) PROCESSING:  $@" >> $LOG
@@ -18,13 +19,13 @@ download_dotfiles() {
     mkdir -p "${DIR}"
 
     _process "→ Downloading repository to /tmp directory"
-    curl -#fLo /tmp/dotfiles-starter-kit.tar.gz "https://github.com/${GITHUB_USER}/dotfiles-starter-kit/tarball/main"
+    curl -#fLo /tmp/${GITHUB_REPO}.tar.gz "https://github.com/${GITHUB_USER}/${GITHUB_REPO}/tarball/main"
 
     _process "→ Extracting files to ${DIR}"
-    tar -zxf /tmp/dotfiles-starter-kit.tar.gz --strip-components 1 -C "${DIR}"
+    tar -zxf /tmp/${GITHUB_REPO}.tar.gz --strip-components 1 -C "${DIR}"
 
     _process "→ Removing tarball from /tmp directory"
-    rm -rf /tmp/dotfiles-starter-kit.tar.gz
+    rm -rf /tmp/${GITHUB_REPO}.tar.gz
 
     [[ $? ]] && _success "${DIR} created, repository downloaded and extracted"
 
@@ -35,7 +36,7 @@ download_dotfiles() {
 link_dotfiles() {
     # symlink files to the HOME directory.
     if [[ -f "${DIR}/opt/files" ]]; then
-        _process "→ Linking files"
+        _process "→ Symlinking dotfiles in /configs"
 
         # Set variable for list of files
         files="${DIR}/opt/files"
