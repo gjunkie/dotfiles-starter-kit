@@ -74,9 +74,83 @@ link_dotfiles() {
     fi
 }
 
+install_homebrew() {
+  _process "→ Installing Homebrew"
+  if [[ "$OSTYPE" =~ ^darwin ]]; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  else
+    ruby -e "$(wget -O- https://raw.github.com/Homebrew/linuxbrew/go/install)"
+  fi
+
+
+  _process "→ Running brew doctor"
+  brew doctor
+  [[ $? ]] \
+  && _success "Installed Homebrew"
+}
+
+install_node() {
+  if ! type -P 'npm' &> /dev/null; then
+    _process "→ Installing node"
+
+    curl https://www.npmjs.org/install.sh | sh
+
+    [[ $? ]] \
+    && _success "Installed npm"
+  fi
+}
+
+install_formulae() {
+  if ! type -P 'brew' &> /dev/null; then
+    _error "Homebrew not found"
+  else
+    _process "→ Installing Homebrew packages"
+
+    # Set variable for list of homebrew formulaes
+    brews="${DIR}/opt/homebrew"
+
+    # Update and upgrade all packages
+    _process "→ Updating and upgrading Homebrew packages"
+    brew update
+    brew upgrade
+
+    # Tap some necessary formulae
+    brew tap homebrew/cask-versions
+    brew tap homebrew/cask-drivers
+    brew tap vitorgalvao/tiny-scripts
+
+    # Store IFS within a temp variable
+    OIFS=$IFS
+
+    # Set the separator to a carriage return & a new line break
+    # read in passed-in file and store as an array
+    IFS=$'\r\n' formulae=($(cat "${brews}"))
+
+    # Loop through split list of formulae
+    _process "→ Checking status of desired Homebrew formulae"
+    for index in ${!formulae[*]}
+    do
+      # Test whether a Homebrew formula is already installed
+      if ! brew list ${formulae[$index]} &> /dev/null; then
+        brew install ${formulae[$index]}
+      fi
+    done
+
+    # Reset IFS back
+    IFS=$OIFS
+
+    brew cleanup
+
+    [[ $? ]] && _success "All Homebrew packages installed and updated"
+  fi
+}
+
 install() {
-    download_dotfiles
-    link_dotfiles
+  download_dotfiles
+  link_dotfiles
+  install_homebrew
+  install_node
+  install_formulae
 }
 
 install
