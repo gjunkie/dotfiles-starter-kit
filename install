@@ -68,20 +68,14 @@ link_dotfiles() {
         # Reset IFS back
         IFS=$OIFS
 
-    # set global Git .gitignore file
-    git config --global core.excludesFile '~/.gitignore'
+        source "${HOME}/.bash_profile"
         [[ $? ]] && _success "All files have been copied"
     fi
 }
 
 install_homebrew() {
   _process "→ Installing Homebrew"
-  if [[ "$OSTYPE" =~ ^darwin ]]; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-  else
-    ruby -e "$(wget -O- https://raw.github.com/Homebrew/linuxbrew/go/install)"
-  fi
-
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
   _process "→ Running brew doctor"
   brew doctor
