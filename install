@@ -68,8 +68,7 @@ link_dotfiles() {
         # Reset IFS back
         IFS=$OIFS
 
-    # set global Git .gitignore file
-    git config --global core.excludesFile '~/.gitignore'
+        source "${HOME}/.bash_profile"
         [[ $? ]] && _success "All files have been copied"
     fi
 }
