@@ -16,6 +16,11 @@ _success() {
   printf "%s✓ Success:%s\n" "$(tput setaf 2)" "$(tput sgr0) $message"
 }
 
+_warning() {
+  echo "$(date) WARNING:  $@" >> $LOG
+  printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
+}
+
 download_dotfiles() {
     _process "→ Creating directory at ${DIR} and setting permissions"
     mkdir -p "${DIR}"
